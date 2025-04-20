@@ -12,7 +12,7 @@ import (
 
 // Connect устанавливает соединение с базой данных
 func Connect(config *Config) (*sql.DB, error) {
-	db, err := sql.Open("postgres", config.ConnectionString())
+	db, err := sql.Open("postgres", config.URL())
 	if err != nil {
 		return nil, fmt.Errorf("ошибка подключения к базе данных: %v", err)
 	}
@@ -26,7 +26,7 @@ func Connect(config *Config) (*sql.DB, error) {
 
 // ConnectWithoutDB устанавливает соединение с PostgreSQL без указания базы данных
 func ConnectWithoutDB(config *Config) (*sql.DB, error) {
-	db, err := sql.Open("postgres", config.ConnectionStringWithoutDB())
+	db, err := sql.Open("postgres", config.URLWithoutDB())
 	if err != nil {
 		return nil, fmt.Errorf("ошибка подключения к PostgreSQL: %v", err)
 	}

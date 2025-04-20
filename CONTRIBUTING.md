@@ -1,141 +1,158 @@
-# Руководство по установке и запуску проекта
+# Руководство по разработке
 
-## Предварительные требования
+## Требования
 
-- Go 1.21 или выше
-- Node.js 18 или выше
-- PostgreSQL 14 или выше
-- Make
+- Docker и Docker Compose
+- Go 1.22 или выше
+- Make (опционально, для использования Makefile)
 
-## Установка и настройка
+## Быстрый старт
 
 1. Клонируйте репозиторий:
 
 ```bash
-git clone https://github.com/your-username/parents-children-contracts.git
+git clone https://github.com/soulfeelings/parents-children-contracts.git
 cd parents-children-contracts
 ```
 
-2. Установите все зависимости:
+2. Запустите проект:
 
 ```bash
-make install
+make setup
 ```
 
-3. Создайте файл `.env.development` в директории `backend`:
+Эта команда:
 
-```bash
-cp backend/.env.example backend/.env.development
-```
+- Создаст необходимые директории
+- Создаст файлы конфигурации (.env.development, .env.test, .env.production)
+- Запустит базу данных PostgreSQL
+- Запустит бэкенд с hot-reload
+- Применит миграции базы данных
 
-4. Настройте переменные окружения в файле `.env.development`:
+## Конфигурация
+
+Проект использует следующие конфигурационные файлы:
+
+- `.env.development` - для разработки
+- `.env.test` - для тестирования
+- `.env.production` - для продакшена
+
+Файлы создаются автоматически при выполнении `make setup`. Проверьте и настройте параметры в этих файлах если необходимо.
+
+Основные параметры:
 
 ```env
+# Настройки приложения
+APP_ENV=development
+PORT=8080
+
+# Настройки базы данных
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=postgres
 DB_NAME=parents_children_dev
-JWT_SECRET=your_secret_key
+DB_SSL_MODE=disable
+
+# Настройки JWT
+JWT_SECRET=your_secret_key_here
+JWT_EXPIRATION=24h
+
+# Путь к миграциям
+MIGRATION_PATH=/app/migrations
 ```
-
-5. Настройте базу данных:
-
-```bash
-make setup-db
-```
-
-6. Запустите миграции:
-
-```bash
-make migrate
-```
-
-7. Заполните базу данных тестовыми данными:
-
-```bash
-make seed-db
-```
-
-## Запуск проекта
-
-### Запуск всего проекта (бэкенд + фронтенд)
-
-```bash
-make run
-```
-
-### Запуск только бэкенда
-
-```bash
-make dev
-```
-
-### Запуск только фронтенда
-
-```bash
-make frontend
-```
-
-## Полезные команды
-
-- `make test` - запуск тестов
-- `make create-migration name=имя_миграции` - создание новой миграции
-- `make rollback-migration` - откат последней миграции
-- `make clean` - очистка базы данных
-- `make seed-db` - заполнение базы данных тестовыми данными
 
 ## Структура проекта
 
 ```
 .
-├── backend/           # Бэкенд на Go
-│   ├── cmd/          # Точки входа приложения
-│   ├── internal/     # Внутренний код приложения
-│   ├── migrations/   # Миграции базы данных
-│   └── scripts/      # Скрипты для работы с БД
-├── frontend/         # Фронтенд на React
-│   ├── src/          # Исходный код
-│   └── public/       # Статические файлы
-└── Makefile         # Команды для управления проектом
+├── backend/                 # Бэкенд на Go
+│   ├── config/             # Конфигурация
+│   ├── database/           # Работа с базой данных
+│   ├── handlers/           # Обработчики HTTP
+│   ├── middleware/         # Middleware
+│   ├── migrations/         # SQL миграции
+│   └── main.go            # Точка входа
+├── frontend/               # Фронтенд на React
+│   ├── src/               # Исходный код
+│   └── public/            # Статические файлы
+└── docker-compose.yml     # Конфигурация Docker
 ```
 
 ## Разработка
 
-1. Создайте новую ветку для ваших изменений:
+### Бэкенд
+
+Бэкенд запускается на порту 8080 с поддержкой hot-reload. При изменении кода сервер автоматически перезапускается.
+
+### База данных
+
+PostgreSQL запускается на порту 5432. Данные сохраняются в Docker volume.
+
+Параметры подключения:
+
+- Host: localhost
+- Port: 5432
+- User: postgres
+- Password: postgres
+- Database: parents_children_dev
+
+### Миграции
+
+Миграции применяются автоматически при запуске. Для создания новой миграции:
 
 ```bash
-git checkout -b feature/your-feature-name
+make migration name=migration_name
 ```
 
-2. Внесите изменения и создайте коммит:
+## Полезные команды
 
 ```bash
-git add .
-git commit -m "Описание ваших изменений"
+make setup          # Первоначальная настройка проекта
+make start         # Запуск всех сервисов
+make stop          # Остановка всех сервисов
+make restart       # Перезапуск всех сервисов
+make logs          # Просмотр логов
+make clean         # Очистка всех данных
+make migration     # Создание новой миграции
 ```
-
-3. Отправьте изменения в репозиторий:
-
-```bash
-git push origin feature/your-feature-name
-```
-
-4. Создайте Pull Request для ваших изменений.
 
 ## Тестирование
 
-Перед отправкой Pull Request убедитесь, что:
+```bash
+make test          # Запуск всех тестов
+make test-backend  # Запуск тестов бэкенда
+make test-frontend # Запуск тестов фронтенда
+```
 
-1. Все тесты проходят успешно (`make test`)
-2. Код соответствует стандартам форматирования
-3. Все миграции применены (`make migrate`)
-4. Приложение успешно запускается (`make run`)
+## Стиль кода
 
-## Получение помощи
+- Бэкенд: следуем стандартному стилю Go
+- Фронтенд: используем ESLint и Prettier
 
-Если у вас возникли проблемы или вопросы:
+## Git Flow
 
-1. Проверьте раздел Issues в репозитории
-2. Создайте новый Issue с описанием проблемы
-3. Обратитесь к команде разработки через соответствующие каналы связи
+1. Создайте ветку для новой функции:
+
+```bash
+git checkout -b feature/name-of-feature
+```
+
+2. Внесите изменения и закоммитьте:
+
+```bash
+git add .
+git commit -m "feat: описание изменений"
+```
+
+3. Отправьте изменения:
+
+```bash
+git push origin feature/name-of-feature
+```
+
+4. Создайте Pull Request
+
+## Лицензия
+
+MIT

@@ -4,10 +4,10 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/soulfeelings/parents-children-contracts/config"
-	"github.com/soulfeelings/parents-children-contracts/database"
-	"github.com/soulfeelings/parents-children-contracts/handlers"
-	"github.com/soulfeelings/parents-children-contracts/middleware"
+	"github.com/soulfeelings/parents-children-contracts/backend/config"
+	"github.com/soulfeelings/parents-children-contracts/backend/database"
+	"github.com/soulfeelings/parents-children-contracts/backend/handlers"
+	"github.com/soulfeelings/parents-children-contracts/backend/middleware"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -27,7 +27,7 @@ func main() {
 
 	// Выполняем миграции
 	if err := database.RunMigrations(cfg); err != nil {
-		log.Fatal("Ошибка выполнения миграций:", err)
+		log.Fatal("Ошибка при применении миграций базы данных в main.go:", err)
 	}
 
 	// Инициализация роутера

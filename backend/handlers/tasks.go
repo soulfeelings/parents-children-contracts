@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/soulfeelings/parents-children-contracts/models"
+	"github.com/soulfeelings/parents-children-contracts/backend/models"
 	"gorm.io/gorm"
 )
 

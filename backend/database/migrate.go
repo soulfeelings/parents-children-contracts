@@ -10,7 +10,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/soulfeelings/parents-children-contracts/config"
+	"github.com/soulfeelings/parents-children-contracts/backend/config"
 )
 
 // RunMigrations выполняет миграции базы данных
@@ -32,7 +32,7 @@ func RunMigrations(cfg *config.Config) error {
 
 	// Выполняем миграции
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		return fmt.Errorf("ошибка выполнения миграций: %v", err)
+		return fmt.Errorf("ошибка при применении миграций базы данных: %v", err)
 	}
 
 	log.Println("Миграции успешно выполнены")

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/soulfeelings/parents-children-contracts/utils"
+	"github.com/soulfeelings/parents-children-contracts/backend/utils"
 )
 
 func AuthMiddleware() gin.HandlerFunc {

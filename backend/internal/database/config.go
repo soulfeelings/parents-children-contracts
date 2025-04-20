@@ -23,7 +23,7 @@ func DefaultConfig() *Config {
 		User:     getEnv("DB_USER", "postgres"),
 		Password: getEnv("DB_PASSWORD", "postgres"),
 		DBName:   getEnv("DB_NAME", "parents_children_dev"),
-		SSLMode:  "disable",
+		SSLMode:  getEnv("DB_SSL_MODE", "disable"),
 	}
 }
 
@@ -37,6 +37,18 @@ func (c *Config) ConnectionString() string {
 func (c *Config) ConnectionStringWithoutDB() string {
 	return fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=%s",
 		c.Host, c.Port, c.User, c.Password, c.SSLMode)
+}
+
+// URL возвращает URL подключения к базе данных в формате postgres://
+func (c *Config) URL() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		c.User, c.Password, c.Host, c.Port, c.DBName, c.SSLMode)
+}
+
+// URLWithoutDB возвращает URL подключения без указания базы данных
+func (c *Config) URLWithoutDB() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s?sslmode=%s",
+		c.User, c.Password, c.Host, c.Port, c.SSLMode)
 }
 
 // getEnv возвращает значение переменной окружения или значение по умолчанию

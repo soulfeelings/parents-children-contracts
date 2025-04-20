@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/soulfeelings/parents-children-contracts/models"
+	"github.com/soulfeelings/parents-children-contracts/backend/models"
 	"gorm.io/gorm"
 )
 
@@ -66,7 +66,7 @@ func (h *RewardHandlers) Create(c *gin.Context) {
 		Title:       req.Title,
 		Description: req.Description,
 		ContractID:  req.ContractID,
-		Points:      req.Points,
+		PointsCost:  req.Points,
 		Status:      "available",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
