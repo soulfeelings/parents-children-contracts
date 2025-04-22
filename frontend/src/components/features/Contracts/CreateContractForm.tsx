@@ -10,6 +10,16 @@ import {
   InputError,
 } from "../../common/Input/Input";
 
+const FormContainer = styled.div`
+  background-color: ${({ theme }) => theme.colors.background.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  padding: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
+`;
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -29,7 +39,7 @@ const TaskItem = styled.div`
 `;
 
 const RemoveButton = styled.button`
-  color: ${({ theme }) => theme.colors.error};
+  color: ${({ theme }) => theme.colors.status.error};
   background: none;
   border: none;
   cursor: pointer;
@@ -40,6 +50,34 @@ const RemoveButton = styled.button`
   &:hover {
     opacity: 0.8;
   }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border: 1px solid ${({ theme }) => theme.colors.background.tertiary};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background-color: ${({ theme }) => theme.colors.background.primary};
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 14px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  }
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  justify-content: flex-end;
+  margin-top: ${({ theme }) => theme.spacing.md};
 `;
 
 interface FormData {
@@ -116,119 +154,121 @@ export const CreateContractForm: React.FC<CreateContractFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <InputGroup>
-        <InputLabel>Название контракта</InputLabel>
-        <Input
-          value={formData.title}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, title: e.target.value }))
-          }
-          placeholder="Например: Хорошие оценки в школе"
-          fullWidth
-        />
-      </InputGroup>
-
-      <InputGroup>
-        <InputLabel>Описание</InputLabel>
-        <Input
-          as="textarea"
-          value={formData.description}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, description: e.target.value }))
-          }
-          placeholder="Опишите условия контракта"
-          fullWidth
-        />
-      </InputGroup>
-
-      <InputGroup>
-        <InputLabel>Задачи</InputLabel>
-        <TaskList>
-          {formData.tasks.map((task, index) => (
-            <TaskItem key={index}>
-              <div style={{ flex: 1 }}>
-                <Input
-                  value={task.title}
-                  onChange={(e) =>
-                    handleTaskChange(index, "title", e.target.value)
-                  }
-                  placeholder="Название задачи"
-                  fullWidth
-                />
-              </div>
-              {formData.tasks.length > 1 && (
-                <RemoveButton
-                  type="button"
-                  onClick={() => handleRemoveTask(index)}
-                >
-                  &times;
-                </RemoveButton>
-              )}
-            </TaskItem>
-          ))}
-        </TaskList>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleAddTask}
-          style={{ marginTop: "8px" }}
-        >
-          Добавить задачу
-        </Button>
-      </InputGroup>
-
-      <InputGroup>
-        <InputLabel>Награда</InputLabel>
-        <select
-          value={formData.reward.type}
-          onChange={(e) =>
-            setFormData((prev) => ({
-              ...prev,
-              reward: {
-                ...prev.reward,
-                type: e.target.value as "money" | "privilege" | "item",
-              },
-            }))
-          }
-        >
-          <option value="money">Деньги</option>
-          <option value="privilege">Привилегия</option>
-          <option value="item">Вещь</option>
-        </select>
-        <Input
-          value={formData.reward.value}
-          onChange={(e) =>
-            setFormData((prev) => ({
-              ...prev,
-              reward: { ...prev.reward, value: e.target.value },
-            }))
-          }
-          placeholder="Описание награды"
-          fullWidth
-        />
-        {formData.reward.type === "money" && (
+    <FormContainer>
+      <Form onSubmit={handleSubmit}>
+        <InputGroup>
+          <InputLabel>Название контракта</InputLabel>
           <Input
-            type="number"
-            value={formData.reward.amount || ""}
+            value={formData.title}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, title: e.target.value }))
+            }
+            placeholder="Например: Хорошие оценки в школе"
+            fullWidth
+          />
+        </InputGroup>
+
+        <InputGroup>
+          <InputLabel>Описание</InputLabel>
+          <Input
+            as="textarea"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
+            placeholder="Опишите условия контракта"
+            fullWidth
+          />
+        </InputGroup>
+
+        <InputGroup>
+          <InputLabel>Задачи</InputLabel>
+          <TaskList>
+            {formData.tasks.map((task, index) => (
+              <TaskItem key={index}>
+                <div style={{ flex: 1 }}>
+                  <Input
+                    value={task.title}
+                    onChange={(e) =>
+                      handleTaskChange(index, "title", e.target.value)
+                    }
+                    placeholder="Название задачи"
+                    fullWidth
+                  />
+                </div>
+                {formData.tasks.length > 1 && (
+                  <RemoveButton
+                    type="button"
+                    onClick={() => handleRemoveTask(index)}
+                  >
+                    &times;
+                  </RemoveButton>
+                )}
+              </TaskItem>
+            ))}
+          </TaskList>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleAddTask}
+            style={{ marginTop: "8px" }}
+          >
+            Добавить задачу
+          </Button>
+        </InputGroup>
+
+        <InputGroup>
+          <InputLabel>Награда</InputLabel>
+          <Select
+            value={formData.reward.type}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
-                reward: { ...prev.reward, amount: Number(e.target.value) },
+                reward: {
+                  ...prev.reward,
+                  type: e.target.value as "money" | "privilege" | "item",
+                },
               }))
             }
-            placeholder="Сумма"
+          >
+            <option value="money">Деньги</option>
+            <option value="privilege">Привилегия</option>
+            <option value="item">Вещь</option>
+          </Select>
+          <Input
+            value={formData.reward.value}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                reward: { ...prev.reward, value: e.target.value },
+              }))
+            }
+            placeholder="Описание награды"
             fullWidth
           />
-        )}
-      </InputGroup>
+          {formData.reward.type === "money" && (
+            <Input
+              type="number"
+              value={formData.reward.amount || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  reward: { ...prev.reward, amount: Number(e.target.value) },
+                }))
+              }
+              placeholder="Сумма"
+              fullWidth
+            />
+          )}
+        </InputGroup>
 
-      <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Отмена
-        </Button>
-        <Button type="submit">Создать контракт</Button>
-      </div>
-    </Form>
+        <ButtonGroup>
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Отмена
+          </Button>
+          <Button type="submit">Создать контракт</Button>
+        </ButtonGroup>
+      </Form>
+    </FormContainer>
   );
 };
