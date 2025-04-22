@@ -18,26 +18,46 @@ const PageHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.xl};
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.spacing.md};
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 const PageTitle = styled.h1`
   color: ${({ theme }) => theme.colors.text.primary};
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 const ContractsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const ContractCard = styled(Card)`
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 const ContractStatus = styled.span<{ status: string }>`
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
   font-size: 12px;
   font-weight: 500;
   background-color: ${({ status, theme }) => {
@@ -45,9 +65,9 @@ const ContractStatus = styled.span<{ status: string }>`
       case "active":
         return `${theme.colors.primary}20`;
       case "completed":
-        return `${theme.colors.success}20`;
+        return `${theme.colors.status.success}20`;
       case "failed":
-        return `${theme.colors.error}20`;
+        return `${theme.colors.status.error}20`;
       default:
         return `${theme.colors.text.tertiary}20`;
     }
@@ -57,13 +77,18 @@ const ContractStatus = styled.span<{ status: string }>`
       case "active":
         return theme.colors.primary;
       case "completed":
-        return theme.colors.success;
+        return theme.colors.status.success;
       case "failed":
-        return theme.colors.error;
+        return theme.colors.status.error;
       default:
         return theme.colors.text.tertiary;
     }
   }};
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+  }
 `;
 
 const ContractParticipants = styled.div`
@@ -71,28 +96,51 @@ const ContractParticipants = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.md};
   margin: ${({ theme }) => `${theme.spacing.md} 0`};
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.spacing.sm};
+    margin: ${({ theme }) => `${theme.spacing.sm} 0`};
+  }
 `;
 
 const ParticipantInfo = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const ParticipantName = styled.span`
   color: ${({ theme }) => theme.colors.text.primary};
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const ParticipantRole = styled.span`
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 12px;
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+  }
 `;
 
 const TasksList = styled.ul`
   list-style: none;
   padding: 0;
   margin: ${({ theme }) => `${theme.spacing.md} 0`};
+
+  @media (max-width: 768px) {
+    margin: ${({ theme }) => `${theme.spacing.sm} 0`};
+  }
 `;
 
 const TaskItem = styled.li`
@@ -107,14 +155,24 @@ const TaskItem = styled.li`
     content: "•";
     color: ${({ theme }) => theme.colors.primary};
   }
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: ${({ theme }) => `${theme.spacing.xs} 0`};
+  }
 `;
 
 const RewardInfo = styled.div`
   margin-top: auto;
   padding-top: ${({ theme }) => theme.spacing.md};
-  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  border-top: 1px solid ${({ theme }) => theme.colors.background.tertiary};
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    padding-top: ${({ theme }) => theme.spacing.sm};
+    font-size: 12px;
+  }
 `;
 
 export const ContractsPage = () => {

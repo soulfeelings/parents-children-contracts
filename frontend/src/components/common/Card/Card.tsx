@@ -10,6 +10,7 @@ export const Card = styled.div<CardProps>`
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
   overflow: hidden;
+  width: 100%;
 
   ${({ variant = "default", theme }) =>
     variant === "outlined"
@@ -24,15 +25,24 @@ export const Card = styled.div<CardProps>`
     switch (padding) {
       case "small":
         return css`
-          padding: ${theme.spacing.md};
+          padding: ${theme.spacing.sm};
+          @media (max-width: 768px) {
+            padding: ${theme.spacing.xs};
+          }
         `;
       case "large":
         return css`
           padding: ${theme.spacing.xl};
+          @media (max-width: 768px) {
+            padding: ${theme.spacing.lg};
+          }
         `;
       default:
         return css`
           padding: ${theme.spacing.lg};
+          @media (max-width: 768px) {
+            padding: ${theme.spacing.md};
+          }
         `;
     }
   }}
@@ -51,11 +61,22 @@ export const Card = styled.div<CardProps>`
       &:active {
         transform: translateY(0);
       }
+
+      @media (max-width: 768px) {
+        &:hover {
+          transform: none;
+          box-shadow: ${theme.shadows.light};
+        }
+      }
     `}
 `;
 
 export const CardHeader = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: 768px) {
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 export const CardTitle = styled.h3`
@@ -63,16 +84,29 @@ export const CardTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
   margin-bottom: ${({ theme }) => theme.spacing.xs};
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 export const CardSubtitle = styled.h4`
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 14px;
   font-weight: 400;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 export const CardContent = styled.div`
   color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 export const CardFooter = styled.div`
@@ -82,4 +116,10 @@ export const CardFooter = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: 768px) {
+    margin-top: ${({ theme }) => theme.spacing.md};
+    padding-top: ${({ theme }) => theme.spacing.sm};
+    gap: ${({ theme }) => theme.spacing.xs};
+  }
 `;

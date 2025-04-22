@@ -14,16 +14,29 @@ const PageHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${({ theme }) => theme.spacing.xl};
+
+  @media (max-width: 768px) {
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 const PageTitle = styled.h1`
   color: ${({ theme }) => theme.colors.text.primary};
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
 `;
 
 const RewardsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const RewardCard = styled(Card)<{ status: string }>`
@@ -31,38 +44,42 @@ const RewardCard = styled(Card)<{ status: string }>`
     ${({ status, theme }) => {
       switch (status) {
         case "available":
-          return theme.colors.success;
+          return theme.colors.status.success;
         case "pending":
           return theme.colors.primary;
         case "used":
           return theme.colors.text.tertiary;
         default:
-          return theme.colors.border;
+          return theme.colors.background.tertiary;
       }
     }};
+
+  @media (max-width: 768px) {
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 const RewardStatus = styled.span<{ status: string }>`
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
   font-size: 12px;
   font-weight: 500;
   background-color: ${({ status, theme }) => {
     switch (status) {
       case "available":
-        return `${theme.colors.success}20`;
+        return `${theme.colors.status.success}20`;
       case "pending":
         return `${theme.colors.primary}20`;
       case "used":
         return `${theme.colors.text.tertiary}20`;
       default:
-        return `${theme.colors.border}20`;
+        return `${theme.colors.background.tertiary}20`;
     }
   }};
   color: ${({ status, theme }) => {
     switch (status) {
       case "available":
-        return theme.colors.success;
+        return theme.colors.status.success;
       case "pending":
         return theme.colors.primary;
       case "used":
@@ -71,6 +88,11 @@ const RewardStatus = styled.span<{ status: string }>`
         return theme.colors.text.secondary;
     }
   }};
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs}`};
+  }
 `;
 
 const RewardMeta = styled.div`
@@ -80,6 +102,14 @@ const RewardMeta = styled.div`
   margin-top: ${({ theme }) => theme.spacing.md};
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: ${({ theme }) => theme.spacing.xs};
+    margin-top: ${({ theme }) => theme.spacing.sm};
+    font-size: 12px;
+  }
 `;
 
 const RewardValue = styled.div`
@@ -90,12 +120,40 @@ const RewardValue = styled.div`
   font-size: 18px;
   font-weight: 500;
   color: ${({ theme }) => theme.colors.text.primary};
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin-top: ${({ theme }) => theme.spacing.sm};
+  }
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  gap: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+    gap: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const FilterButtons = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.sm};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: ${({ theme }) => theme.spacing.xs};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+
+    button {
+      flex: 1;
+      min-width: calc(50% - ${({ theme }) => theme.spacing.xs});
+    }
+  }
 `;
 
 const FilterGroup = styled.div`
@@ -106,11 +164,22 @@ const FilterGroup = styled.div`
   & + & {
     margin-left: ${({ theme }) => theme.spacing.xl};
   }
+
+  @media (max-width: 768px) {
+    & + & {
+      margin-left: 0;
+      margin-top: ${({ theme }) => theme.spacing.md};
+    }
+  }
 `;
 
 const FilterLabel = styled.span`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.text.secondary};
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 type RewardType = "all" | "money" | "privilege" | "item";
@@ -148,7 +217,7 @@ export const RewardsPage = () => {
         <PageTitle>Награды</PageTitle>
       </PageHeader>
 
-      <div style={{ display: "flex", marginBottom: "24px" }}>
+      <FilterContainer>
         <FilterGroup>
           <FilterLabel>Тип награды</FilterLabel>
           <FilterButtons>
@@ -208,7 +277,7 @@ export const RewardsPage = () => {
             </Button>
           </FilterButtons>
         </FilterGroup>
-      </div>
+      </FilterContainer>
 
       <RewardsContainer>
         {filteredRewards.length === 0 ? (

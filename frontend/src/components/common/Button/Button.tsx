@@ -16,6 +16,8 @@ export const Button = styled.button<ButtonProps>`
   border-radius: ${({ theme }) => theme.borderRadius.md};
   font-weight: 500;
   transition: all 0.2s ease-in-out;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   ${({ fullWidth }) =>
     fullWidth &&
@@ -29,16 +31,31 @@ export const Button = styled.button<ButtonProps>`
         return css`
           padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
           font-size: 14px;
+          @media (max-width: 768px) {
+            padding: ${({ theme }) =>
+              `${theme.spacing.xs} ${theme.spacing.sm}`};
+            font-size: 12px;
+          }
         `;
       case "large":
         return css`
           padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
           font-size: 16px;
+          @media (max-width: 768px) {
+            padding: ${({ theme }) =>
+              `${theme.spacing.sm} ${theme.spacing.lg}`};
+            font-size: 14px;
+          }
         `;
       default:
         return css`
           padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
           font-size: 15px;
+          @media (max-width: 768px) {
+            padding: ${({ theme }) =>
+              `${theme.spacing.xs} ${theme.spacing.md}`};
+            font-size: 14px;
+          }
         `;
     }
   }}
@@ -58,6 +75,12 @@ export const Button = styled.button<ButtonProps>`
           &:active {
             background-color: ${theme.colors.active};
           }
+
+          @media (max-width: 768px) {
+            &:hover {
+              background-color: ${theme.colors.background};
+            }
+          }
         `;
       case "outline":
         return css`
@@ -71,6 +94,12 @@ export const Button = styled.button<ButtonProps>`
 
           &:active {
             background-color: ${theme.colors.primary}20;
+          }
+
+          @media (max-width: 768px) {
+            &:hover {
+              background-color: transparent;
+            }
           }
         `;
       default:
@@ -86,6 +115,13 @@ export const Button = styled.button<ButtonProps>`
 
           &:active {
             transform: translateY(0);
+          }
+
+          @media (max-width: 768px) {
+            &:hover {
+              opacity: 1;
+              transform: none;
+            }
           }
         `;
     }
