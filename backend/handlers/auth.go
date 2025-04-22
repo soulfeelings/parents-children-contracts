@@ -95,13 +95,13 @@ func (h *AuthHandlers) Login(c *gin.Context) {
 	// Ищем пользователя
 	var user models.User
 	if result := h.db.Where("email = ?", req.Email).First(&user); result.Error != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный email или пароль"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Неверный email или пароль"})
 		return
 	}
 
 	// Проверяем пароль
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный email или пароль"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Неверный email или пароль"})
 		return
 	}
 

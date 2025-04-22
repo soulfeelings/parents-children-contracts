@@ -37,10 +37,34 @@ services:
       - JWT_SECRET=your_development_secret_key
       - JWT_EXPIRATION=24h
       - PORT=8080
-      - MIGRATION_PATH=./migrations
+      - MIGRATION_PATH=/app/migrations
     depends_on:
       postgres:
         condition: service_healthy
+
+  # test:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile.test
+  #   volumes:
+  #     - ./backend:/app
+  #     - go_modules:/go/pkg/mod
+  #   environment:
+  #     - APP_ENV=test
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USER=postgres
+  #     - DB_PASSWORD=postgres
+  #     - DB_NAME=parents_children_test
+  #     - DB_SSL_MODE=disable
+  #     - JWT_SECRET=test_secret_key
+  #     - JWT_EXPIRATION=24h
+  #     - PORT=8081
+  #     - MIGRATION_PATH=./migrations
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   command: go test ./tests/... -v
 
 volumes:
   postgres_data:

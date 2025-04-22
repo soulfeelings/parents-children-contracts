@@ -7,12 +7,12 @@ import (
 )
 
 type Contract struct {
-	ID          uint           `gorm:"primaryKey" json:"id"`
+	ID          string         `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()" json:"id"`
 	Title       string         `gorm:"not null" json:"title"`
 	Description string         `json:"description"`
-	ParentID    uint          `gorm:"not null" json:"parent_id"`
+	ParentID    string        `gorm:"type:uuid;not null" json:"parent_id"`
 	Parent      User          `gorm:"foreignKey:ParentID" json:"parent"`
-	ChildID     uint          `gorm:"not null" json:"child_id"`
+	ChildID     string        `gorm:"type:uuid;not null" json:"child_id"`
 	Child       User          `gorm:"foreignKey:ChildID" json:"child"`
 	Tasks       []Task        `gorm:"foreignKey:ContractID" json:"tasks"`
 	Rewards     []Reward      `gorm:"foreignKey:ContractID" json:"rewards"`

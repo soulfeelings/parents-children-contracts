@@ -8,8 +8,6 @@ import (
 	"github.com/soulfeelings/parents-children-contracts/backend/database"
 	"github.com/soulfeelings/parents-children-contracts/backend/handlers"
 	"github.com/soulfeelings/parents-children-contracts/backend/middleware"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -20,33 +18,24 @@ func main() {
 	}
 
 	// Подключаемся к базе данных
-	db, err := gorm.Open(postgres.Open(cfg.GetDSN()), &gorm.Config{})
+	db, err := database.Connect(cfg)
 	if err != nil {
 		log.Fatal("Ошибка подключения к базе данных:", err)
 	}
 
-	// Выполняем миграции
+	// Применяем миграции
 	if err := database.RunMigrations(cfg); err != nil {
-		log.Fatal("Ошибка при применении миграций базы данных в main.go:", err)
+		log.Fatal("Ошибка применения миграций:", err)
 	}
 
-	// Инициализация роутера
+	// Инициализируем роутер
 	router := gin.Default()
 
-	// CORS middleware
-	router.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+	// Настраиваем trusted proxies
+	router.SetTrustedProxies([]string{"127.0.0.1", "::1"})
 
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
-	})
+	// Настраиваем CORS
+	router.Use(middleware.CORS())
 
 	// Инициализация обработчиков
 	authHandlers := handlers.NewAuthHandlers(db)

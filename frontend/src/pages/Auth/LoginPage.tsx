@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../store";
 import styled from "styled-components";
 import {
   Card,
@@ -9,13 +11,15 @@ import {
 } from "../../components/common/Card/Card";
 import { Button } from "../../components/common/Button/Button";
 import { Input } from "../../components/common/Input/Input";
+import { loginThunk } from "../../store/thunks/authThunks";
+import { RootState } from "../../store";
 
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.background.primary};
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 
@@ -24,7 +28,7 @@ const LoginCard = styled(Card)`
   max-width: 400px;
 `;
 
-const Form = styled.form`
+const LoginForm = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
@@ -42,7 +46,7 @@ const FormLabel = styled.label`
 `;
 
 const ErrorMessage = styled.div`
-  color: ${({ theme }) => theme.colors.error};
+  color: ${({ theme }) => theme.colors.status.error};
   font-size: 14px;
   margin-top: ${({ theme }) => theme.spacing.xs};
 `;
@@ -78,22 +82,20 @@ const RegisterLink = styled.div`
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
+  const handleSubmit = async () => {
     try {
-      // TODO: Implement actual login logic
-      console.log("Login attempt with:", formData);
-      navigate("/contracts");
-    } catch (err) {
-      setError("Неверный email или пароль");
+      await dispatch(loginThunk(formData)).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
     }
   };
 
@@ -105,6 +107,12 @@ export const LoginPage = () => {
     }));
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
+  };
+
   return (
     <PageContainer>
       <LoginCard>
@@ -112,7 +120,7 @@ export const LoginPage = () => {
           <CardTitle>Вход в систему</CardTitle>
         </CardHeader>
         <CardContent>
-          <Form onSubmit={handleSubmit}>
+          <LoginForm>
             <FormGroup>
               <FormLabel>Email</FormLabel>
               <Input
@@ -120,8 +128,10 @@ export const LoginPage = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                onKeyPress={handleKeyPress}
                 placeholder="Введите ваш email"
                 required
+                disabled={isLoading}
               />
             </FormGroup>
 
@@ -132,8 +142,10 @@ export const LoginPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
+                onKeyPress={handleKeyPress}
                 placeholder="Введите ваш пароль"
                 required
+                disabled={isLoading}
               />
               <ForgotPassword to="/forgot-password">
                 Забыли пароль?
@@ -142,13 +154,15 @@ export const LoginPage = () => {
 
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
-            <Button type="submit">Войти</Button>
+            <Button onClick={handleSubmit} disabled={isLoading}>
+              {isLoading ? "Вход..." : "Войти"}
+            </Button>
 
             <RegisterLink>
               Нет аккаунта?
               <Link to="/register">Зарегистрироваться</Link>
             </RegisterLink>
-          </Form>
+          </LoginForm>
         </CardContent>
       </LoginCard>
     </PageContainer>

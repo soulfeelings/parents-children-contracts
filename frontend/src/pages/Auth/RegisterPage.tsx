@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import {
   Card,
@@ -9,13 +10,15 @@ import {
 } from "../../components/common/Card/Card";
 import { Button } from "../../components/common/Button/Button";
 import { Input } from "../../components/common/Input/Input";
+import { registerThunk } from "../../store/thunks/authThunks";
+import { RootState } from "../../store";
 
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.background.primary};
   padding: ${({ theme }) => theme.spacing.xl};
 `;
 
@@ -42,7 +45,7 @@ const FormLabel = styled.label`
 `;
 
 const ErrorMessage = styled.div`
-  color: ${({ theme }) => theme.colors.error};
+  color: ${({ theme }) => theme.colors.status.error};
   font-size: 14px;
   margin-top: ${({ theme }) => theme.spacing.xs};
 `;
@@ -81,31 +84,35 @@ const LoginLink = styled.div`
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    role: "parent", // 'parent' или 'child'
+    username: "",
+    first_name: "",
+    last_name: "",
+    role: "parent" as "parent" | "child",
   });
-  const [error, setError] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setValidationError("");
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Пароли не совпадают");
+    if (formData.password !== confirmPassword) {
+      setValidationError("Пароли не совпадают");
       return;
     }
 
     try {
-      // TODO: Implement actual registration logic
-      console.log("Registration attempt with:", formData);
-      navigate("/contracts");
-    } catch (err) {
-      setError("Ошибка при регистрации. Попробуйте другой email.");
+      await dispatch(registerThunk(formData)).unwrap();
+      navigate("/");
+    } catch (error) {
+      // Ошибка уже обработана в thunk
+      console.error("Registration failed:", error);
     }
   };
 
@@ -114,6 +121,13 @@ export const RegisterPage = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleRoleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      role: e.target.value as "parent" | "child",
     }));
   };
 
@@ -126,30 +140,6 @@ export const RegisterPage = () => {
         <CardContent>
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <FormLabel>Имя</FormLabel>
-              <Input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="Введите ваше имя"
-                required
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <FormLabel>Фамилия</FormLabel>
-              <Input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="Введите вашу фамилию"
-                required
-              />
-            </FormGroup>
-
-            <FormGroup>
               <FormLabel>Email</FormLabel>
               <Input
                 type="email"
@@ -158,6 +148,44 @@ export const RegisterPage = () => {
                 onChange={handleChange}
                 placeholder="Введите ваш email"
                 required
+                disabled={isLoading}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <FormLabel>Имя пользователя</FormLabel>
+              <Input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Придумайте имя пользователя"
+                required
+                disabled={isLoading}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <FormLabel>Имя</FormLabel>
+              <Input
+                type="text"
+                name="first_name"
+                value={formData.first_name}
+                onChange={handleChange}
+                placeholder="Введите ваше имя"
+                disabled={isLoading}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <FormLabel>Фамилия</FormLabel>
+              <Input
+                type="text"
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleChange}
+                placeholder="Введите вашу фамилию"
+                disabled={isLoading}
               />
             </FormGroup>
 
@@ -170,6 +198,7 @@ export const RegisterPage = () => {
                 onChange={handleChange}
                 placeholder="Придумайте пароль"
                 required
+                disabled={isLoading}
               />
             </FormGroup>
 
@@ -177,11 +206,11 @@ export const RegisterPage = () => {
               <FormLabel>Подтверждение пароля</FormLabel>
               <Input
                 type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Повторите пароль"
                 required
+                disabled={isLoading}
               />
             </FormGroup>
 
@@ -194,7 +223,8 @@ export const RegisterPage = () => {
                     name="role"
                     value="parent"
                     checked={formData.role === "parent"}
-                    onChange={handleChange}
+                    onChange={handleRoleChange}
+                    disabled={isLoading}
                   />
                   Родитель
                 </RoleOption>
@@ -204,16 +234,21 @@ export const RegisterPage = () => {
                     name="role"
                     value="child"
                     checked={formData.role === "child"}
-                    onChange={handleChange}
+                    onChange={handleRoleChange}
+                    disabled={isLoading}
                   />
                   Ребенок
                 </RoleOption>
               </RoleSelector>
             </FormGroup>
 
-            {error && <ErrorMessage>{error}</ErrorMessage>}
+            {(error || validationError) && (
+              <ErrorMessage>{error || validationError}</ErrorMessage>
+            )}
 
-            <Button type="submit">Зарегистрироваться</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Регистрация..." : "Зарегистрироваться"}
+            </Button>
 
             <LoginLink>
               Уже есть аккаунт?

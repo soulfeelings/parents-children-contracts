@@ -12,7 +12,7 @@ import (
 type CreateTaskRequest struct {
 	Title       string    `json:"title" binding:"required"`
 	Description string    `json:"description"`
-	ContractID  uint      `json:"contract_id" binding:"required"`
+	ContractID  string    `json:"contract_id" binding:"required"`
 	Points      int       `json:"points" binding:"required,min=0"`
 	DueDate     time.Time `json:"due_date" binding:"required"`
 }

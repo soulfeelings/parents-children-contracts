@@ -30,13 +30,11 @@ func LoadConfig() (*Config, error) {
 		env = "development"
 	}
 
-	// Загружаем соответствующий .env файл
+	// Пытаемся загрузить .env файл, но не возвращаем ошибку, если его нет
 	envFile := fmt.Sprintf(".env.%s", env)
 	if err := godotenv.Load(envFile); err != nil {
-		// Если файл не найден, пробуем загрузить общий .env
-		if err := godotenv.Load(); err != nil {
-			return nil, fmt.Errorf("ошибка загрузки .env файла: %v", err)
-		}
+		// Если специфичный для окружения файл не найден, пробуем загрузить общий .env
+		_ = godotenv.Load()
 	}
 
 	// Получаем путь к директории с миграциями

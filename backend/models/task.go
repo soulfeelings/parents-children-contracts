@@ -7,10 +7,10 @@ import (
 )
 
 type Task struct {
-	ID          uint           `gorm:"primaryKey" json:"id"`
+	ID          string         `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()" json:"id"`
 	Title       string         `gorm:"not null" json:"title"`
 	Description string         `json:"description"`
-	ContractID  uint          `gorm:"not null" json:"contract_id"`
+	ContractID  string        `gorm:"type:uuid;not null" json:"contract_id"`
 	Contract    Contract      `gorm:"foreignKey:ContractID" json:"contract"`
 	Status      string        `gorm:"not null" json:"status"` // pending, completed, failed
 	DueDate     time.Time     `gorm:"not null" json:"due_date"`

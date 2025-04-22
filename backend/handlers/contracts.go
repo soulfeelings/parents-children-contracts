@@ -12,7 +12,7 @@ import (
 type CreateContractRequest struct {
 	Title       string    `json:"title" binding:"required"`
 	Description string    `json:"description"`
-	ChildID     uint      `json:"child_id" binding:"required"`
+	ChildID     string    `json:"child_id" binding:"required"`
 	StartDate   time.Time `json:"start_date" binding:"required"`
 	EndDate     time.Time `json:"end_date" binding:"required"`
 }
@@ -67,7 +67,7 @@ func (h *ContractHandlers) Create(c *gin.Context) {
 	contract := models.Contract{
 		Title:       req.Title,
 		Description: req.Description,
-		ParentID:    parentID.(uint),
+		ParentID:    parentID.(string),
 		ChildID:     req.ChildID,
 		Status:      "active",
 		StartDate:   req.StartDate,

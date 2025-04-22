@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { useAppSelector } from "../../store/hooks";
+
 import {
   Card,
   CardHeader,
