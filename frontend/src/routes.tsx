@@ -6,6 +6,7 @@ import { RewardsPage } from "./pages/Rewards/RewardsPage";
 import { SettingsPage } from "./pages/Settings/SettingsPage";
 import { LoginPage } from "./pages/Auth/LoginPage";
 import { RegisterPage } from "./pages/Auth/RegisterPage";
+import { ChildrenPage } from "./pages/ChildrenPage";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 
@@ -39,8 +40,12 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
+        path: "contracts",
         element: <ContractsPage />,
+      },
+      {
+        index: true,
+        element: <ChildrenPage />,
       },
       {
         path: "tasks",

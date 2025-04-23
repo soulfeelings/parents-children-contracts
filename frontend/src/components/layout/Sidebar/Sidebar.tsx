@@ -1,13 +1,23 @@
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { Avatar } from "../../common/Avatar/Avatar";
+import {
+  IoHomeOutline,
+  IoPeopleOutline,
+  IoDocumentTextOutline,
+  IoCheckboxOutline,
+  IoGiftOutline,
+  IoSettingsOutline,
+} from "react-icons/io5";
 
 const SidebarContainer = styled.aside`
   width: 280px;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.white};
-  border-right: 1px solid ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.background.primary};
+  border-right: 1px solid ${({ theme }) => theme.colors.background.tertiary};
   padding: ${({ theme }) => theme.spacing.lg} 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const UserSection = styled.div`
@@ -24,57 +34,80 @@ const UserInfo = styled.div`
 
 const UserName = styled.h3`
   color: ${({ theme }) => theme.colors.text.primary};
-  font-size: 16px;
+  margin: 0;
+  font-size: 1rem;
   font-weight: 500;
 `;
 
 const UserRole = styled.p`
   color: ${({ theme }) => theme.colors.text.secondary};
-  font-size: 14px;
+  margin: 0;
+  font-size: 0.875rem;
 `;
 
 const Navigation = styled.nav`
-  margin-top: ${({ theme }) => theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => `0 ${theme.spacing.sm}`};
 `;
 
 const NavItem = styled(NavLink)`
   display: flex;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+  padding: ${({ theme }) => theme.spacing.md};
   color: ${({ theme }) => theme.colors.text.primary};
   text-decoration: none;
-  transition: background-color 0.2s ease;
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  transition: all 0.2s ease;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  svg {
+    font-size: 1.25rem;
+    color: ${({ theme }) => theme.colors.text.secondary};
+  }
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.hover};
+    background-color: ${({ theme }) => theme.colors.background.secondary};
   }
 
   &.active {
-    background-color: ${({ theme }) => `${theme.colors.primary}10`};
-    color: ${({ theme }) => theme.colors.primary};
-    font-weight: 500;
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: white;
+
+    svg {
+      color: white;
+    }
   }
 `;
+
+const menuItems = [
+  { path: "/", icon: <IoHomeOutline />, label: "Главная" },
+  { path: "/children", icon: <IoPeopleOutline />, label: "Дети" },
+  { path: "/contracts", icon: <IoDocumentTextOutline />, label: "Контракты" },
+  { path: "/tasks", icon: <IoCheckboxOutline />, label: "Задачи" },
+  { path: "/rewards", icon: <IoGiftOutline />, label: "Награды" },
+  { path: "/settings", icon: <IoSettingsOutline />, label: "Настройки" },
+];
 
 export const Sidebar = () => {
   return (
     <SidebarContainer>
       <UserSection>
-        <Avatar size="large" fallback="John Doe" />
+        <Avatar size="large" fallback="JD" />
         <UserInfo>
-          <UserName>John Doe</UserName>
+          <UserName>Иван Иванов</UserName>
           <UserRole>Родитель</UserRole>
         </UserInfo>
       </UserSection>
 
       <Navigation>
-        <NavItem to="/" end>
-          Главная
-        </NavItem>
-        <NavItem to="/contracts">Контракты</NavItem>
-        <NavItem to="/tasks">Задачи</NavItem>
-        <NavItem to="/rewards">Награды</NavItem>
-        <NavItem to="/settings">Настройки</NavItem>
+        {menuItems.map((item) => (
+          <NavItem key={item.path} to={item.path} end={item.path === "/"}>
+            {item.icon}
+            {item.label}
+          </NavItem>
+        ))}
       </Navigation>
     </SidebarContainer>
   );
